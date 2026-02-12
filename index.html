@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 Éternelle Romance - Saint-Valentin 2026</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Firebase pour les notifications push -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 10% 30%, #ff758c 0%, #ff7eb3 50%, #ff9a9e 100%);
+            font-family: 'Cormorant Garamond', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animation de fond romantique */
+        .romantic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart-rain {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 24px;
+            animation: rain 8s linear infinite;
+        }
+
+        @keyframes rain {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .rose-petal {
+            position: absolute;
+            background: linear-gradient(45deg, #ffb6c1, #ffc0cb);
+            width: 25px;
+            height: 25px;
+            border-radius: 80% 0 55% 0;
+            transform: rotate(-45deg);
+            animation: petalFall 10s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes petalFall {
+            0% {
+                transform: translateY(-100px) rotate(-45deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Conteneur principal */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 50px;
+            box-shadow: 0 30px 70px rgba(212, 63, 100, 0.3);
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            animation: containerAppear 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes containerAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Section nom */
+        .name-section {
+            text-align: center;
+            transition: all 0.5s;
+        }
+
+        .main-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            color: #d43f64;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(255, 182, 193, 0.4);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 3px 3px 6px rgba(255, 182, 193, 0.4); }
+            50% { text-shadow: 6px 6px 12px rgba(255, 77, 109, 0.6); }
+        }
+
+        .romantic-intro {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .name-field {
+            padding: 18px 30px;
+            border: 3px solid #ffb6c1;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            transition: all 0.4s;
+            outline: none;
+            font-family: 'Playfair Display', serif;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .name-field:focus {
+            border-color: #ff4d6d;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-reveal {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ff4d6d, #ff6b8b, #ff8fa3);
+            color: white;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .btn-reveal:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.6);
+        }
+
+        /* Section poème */
+        .poem-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s;
+        }
+
+        .poem-section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .poem-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .poem-header h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: #d43f64;
+            margin-bottom: 15px;
+        }
+
+        .dedication {
+            font-size: 1.6rem;
+            color: #b3395c;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* POÈME TRÈS LONG - 5 STROPHES */
+        .long-poem {
+            background: linear-gradient(145deg, #fff5f5, #ffe9f0);
+            padding: 50px;
+            border-radius: 40px;
+            margin: 30px 0;
+            box-shadow: inset 0 0 40px rgba(255, 182, 193, 0.2);
+            border: 1px solid #ffcdd2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .long-poem::before {
+            content: "❀";
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 30px;
+            color: rgba(255, 77, 109, 0.2);
+            transform: rotate(-15deg);
+        }
+
+        .long-poem::after {
+            content: "❀";
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: rgba(255, 77, 109, 0.2);
+            transform: rotate(15deg);
+        }
+
+        .stanza {
+            margin-bottom: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            line-height: 2;
+            color: #2c3e50;
+            font-style: italic;
+            position: relative;
+            padding-left: 20px;
+            border-left: 3px solid #ffb6c1;
+        }
+
+        .stanza:last-child {
+            margin-bottom: 0;
+        }
+
+        .stanza p {
+            margin-bottom: 15px;
+            white-space: pre-line;
+        }
+
+        .stanza .verse {
+            margin-bottom: 10px;
+        }
+
+        .signature-area {
+            margin-top: 40px;
+            text-align: right;
+            padding-top: 30px;
+            border-top: 2px dashed #ffb6c1;
+        }
+
+        .signature-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+            color: #ff4d6d;
+        }
+
+        .signature-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* Section Valentine */
+        .valentine-arena {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255, 240, 245, 0.7);
+            border-radius: 30px;
+            border: 2px solid white;
+        }
+
+        .valentine-question-box {
+            text-align: center;
+            font-size: 2.2rem;
+            font-family: 'Dancing Script', cursive;
+            color: #d43f64;
+            margin-bottom: 30px;
+        }
+
+        .battle-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            min-height: 120px;
+        }
+
+        .btn-yes {
+            padding: 20px 60px;
+            font-size: 2rem;
+            background: linear-gradient(45deg, #ff4d6d, #ff6b8b);
+            border: none;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.5);
+            animation: heartbeat 1.5s ease-in-out infinite;
+            font-family: 'Dancing Script', cursive;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            35% { transform: scale(1); }
+            45% { transform: scale(1.05); }
+            55% { transform: scale(1); }
+        }
+
+        .btn-no {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: #a0a0a0;
+            border: none;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            font-family: 'Dancing Script', cursive;
+            border: 2px solid #cccccc;
+        }
+
+        .attempt-tracker {
+            position: absolute;
+            top: -30px;
+            right: 20px;
+            font-size: 1rem;
+            color: #ff4d6d;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Messages de réponse */
+        .response-area {
+            margin-top: 30px;
+            min-height: 80px;
+        }
+
+        .sad-message-box {
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 182, 193, 0.3);
+            font-size: 1.5rem;
+            color: #721c24;
+            animation: messageAppear 0.5s ease;
+            font-family: 'Dancing Script', cursive;
+            text-align: center;
+            border: 2px solid #ffb6c1;
+        }
+
+        .joy-message-box {
+            padding: 40px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            border-radius: 30px;
+            color: white;
+            font-size: 2.2rem;
+            font-family: 'Great Vibes', cursive;
+            animation: celebration 1s ease;
+            text-align: center;
+            border: 3px solid white;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes celebration {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Notification de confirmation */
+        .notification-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9999;
+            animation: slideIn 0.5s ease;
+            border-left: 5px solid #ff4d6d;
+            max-width: 400px;
+        }
+
+        .notification-icon {
+            font-size: 2rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: bold;
+            color: #d43f64;
+            margin-bottom: 5px;
+        }
+
+        .notification-message {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .container {
+                padding: 30px;
+            }
+            
+            .main-title {
+                font-size: 3rem;
+            }
+            
+            .long-poem {
+                padding: 30px;
+            }
+            
+            .stanza {
+                font-size: 1rem;
+            }
+            
+            .battle-buttons {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fond animé -->
+    <div class="romantic-bg" id="animatedBg"></div>
+
+    <!-- Conteneur principal -->
+    <div class="container" id="mainContainer">
+        <!-- SECTION 1: ENTRÉE DU NOM -->
+        <div class="name-section" id="nameSection">
+            <h1 class="main-title">💕 Éternelle Romance 💕</h1>
+            <p class="romantic-intro">
+                Un poème écrit avec tout mon cœur, <br>
+                page après page, rêve après rêve... <br>
+                Mais d'abord, laisse-moi connaître le nom <br>
+                qui fait battre mon cœur si fort.
+            </p>
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    id="nameInput" 
+                    class="name-field" 
+                    placeholder="✨ Ton prénom, mon étoile ✨"
+                    autocomplete="off"
+                    autofocus
+                >
+                <button class="btn-reveal" onclick="revealPoem()">
+                    💝 Découvrir mon poème 💝
+                </button>
+            </div>
+        </div>
+
+        <!-- SECTION 2: POÈME ET DEMANDE -->
+        <div class="poem-section" id="poemSection">
+            <div class="poem-header">
+                <h2>Pour toi, <span id="userNameDisplay"></span></h2>
+                <div class="dedication" id="dedicationLine"></div>
+            </div>
+
+            <!-- POÈME TRÈS LONG - 5 STROPHES DE 12 VERS -->
+            <div class="long-poem" id="poemContainer">
+                <div class="stanza" id="stanza1"></div>
+                <div class="stanza" id="stanza2"></div>
+                <div class="stanza" id="stanza3"></div>
+                <div class="stanza" id="stanza4"></div>
+                <div class="stanza" id="stanza5"></div>
+                
+                <div class="signature-area">
+                    <div class="signature-name">Ton amoureux(se)</div>
+                    <div class="signature-date">Saint-Valentin 2026 - Pour l'éternité</div>
+                </div>
+            </div>
+
+            <!-- SECTION DEMANDE VALENTINE -->
+            <div class="valentine-arena">
+                <div class="valentine-question-box">
+                    💘 <span id="userNameQuestion"></span>, veux-tu être ma Valentine ? 💘
+                </div>
+                
+                <div class="battle-buttons" id="buttonContainer">
+                    <button class="btn-yes" onclick="sayYes()">❤️ OUI ❤️</button>
+                    <button class="btn-no" id="noButton" onclick="sayNo()">NON</button>
+                    <div class="attempt-tracker" id="attemptCounter"></div>
+                </div>
+                
+                <div class="response-area" id="responseMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteneur pour les notifications -->
+    <div id="notificationContainer"></div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION FIREBASE POUR NOTIFICATIONS
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY_FIREBASE",
+            authDomain: "VOTRE_AUTH_DOMAIN",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_STORAGE_BUCKET",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
+        };
+
+        // Initialiser Firebase
+        let messaging = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            messaging = firebase.messaging();
+            
+            // Demander la permission de notification
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    console.log('✅ Notifications autorisées');
+                    // Obtenir le token
+                    messaging.getToken().then((token) => {
+                        localStorage.setItem('fcm_token', token);
+                        console.log('Token FCM:', token);
+                    });
+                }
+            });
+        } catch (e) {
+            console.log('Firebase non configuré, utilisation des notifications simulées');
+        }
+
+        // ============================================
+        // POÈME TRÈS LONG - 60 VERS AU TOTAL
+        // ============================================
+        const longPoem = {
+            stanza1: [
+                "Depuis le premier jour où j'ai croisé ton regard,",
+                "Le temps s'est arrêté, le monde a retenu son souffle.",
+                "Ton sourire a dessiné dans mon cœur un éclat,",
+                "Plus brillant que mille étoiles dans la nuit la plus sombre.",
+                "Tes yeux, deux océans où je me noie avec délice,",
+                "Ta voix, une mélodie qui berce mes jours et mes nuits.",
+                "Chaque mot que tu prononces est une caresse,",
+                "Chaque silence partagé est une promesse.",
+                "Je ne croyais plus en l'amour, je l'avoue,",
+                "Mais tu es apparue, et tout a changé soudain.",
+                "Comme une rose qui éclot après la pluie,",
+                "Tu as fait renaître le printemps dans mon jardin."
+            ],
+            
+            stanza2: [
+                "Je pense à toi dès que le soleil se lève,",
+                "Quand ses premiers rayons dansent sur mes paupières.",
+                "Ton prénom est la première note de mon rêve,",
+                "La dernière prière que je murmure à la nuit claire.",
+                "Dans le bruit du monde, je cherche ta voix,",
+                "Dans la foule, je guette ton visage.",
+                "Tu es l'évidence que j'attendais sans le savoir,",
+                "Le chapitre manquant de mon histoire, la page.",
+                "Avant toi, je traversais les jours sans les vivre,",
+                "Je regardais le temps couler sans m'y baigner.",
+                "Maintenant chaque instant est un livre",
+                "Que je veux écrire à deux, à jamais."
+            ],
+            
+            stanza3: [
+                "Si l'amour était un voyage, tu serais ma destination.",
+                "Si c'était un océan, tu serais mon horizon.",
+                "Si c'était une chanson, tu serais ma mélodie,",
+                "Si c'était un rêve, je ne voudrais jamais me réveiller.",
+                "J'aimerais te dessiner des arcs-en-ciel après la pluie,",
+                "Te cueillir des étoiles pour orner tes cheveux,",
+                "T'écrire des poèmes sur le sable de ta vie,",
+                "Et danser avec toi sous le ciel merveilleux.",
+                "J'aimerais être le vent qui effleure ta peau,",
+                "Le soleil qui réchauffe tes matins frileux,",
+                "La lune qui veille sur ton doux repos,",
+                "Et le temps qui s'arrête quand tu es heureux."
+            ],
+            
+            stanza4: [
+                "Je ne sais pas si les âmes sœurs existent vraiment,",
+                "Mais si elles existent, tu es la mienne sans aucun doute.",
+                "Je te reconnaîtrais parmi mille, parmi cent,",
+                "Dans chaque vie, dans chaque monde, sur chaque route.",
+                "Car mon cœur a trouvé le sien en te rencontrant,",
+                "Comme une clé qui découvre enfin sa serrure.",
+                "Avant toi, j'étais un puzzle incomplet,",
+                "Il manquait cette pièce que toi seule possède.",
+                "Maintenant tout s'assemble, tout est à sa place,",
+                "L'univers a soudainement trouvé son sens.",
+                "Ton amour est la plus belle des grâces,",
+                "Ma plus précieuse, ma plus belle chance."
+            ],
+            
+            stanza5: [
+                "Alors aujourd'hui, en ce jour de Saint-Valentin,",
+                "Je dépose mon cœur à tes pieds, sans défense,",
+                "Sans armure, sans peur, sans aucun lendemain,",
+                "Juste l'instant présent, juste notre romance.",
+                "Je ne te promets pas un amour sans nuages,",
+                "Ni des jours toujours bleus, ni des nuits sans orage.",
+                "Mais je te promets d'être là, quoi qu'il arrive,",
+                "D'être ton port, ton refuge, ta rive.",
+                "Je te promets d'écouter même les silences,",
+                "De comprendre tes larmes, de célébrer tes rires,",
+                "De t'aimer dans la joie comme dans l'absence,",
+                "Et de rester à tes côtés sans rien désirer d'autre.",
+                "Alors dis-moi, mon amour, toi qui fais battre ma vie,",
+                "Veux-tu écrire avec moi le plus beau des chapitres ?",
+                "Veux-tu être ma Valentine aujourd'hui,",
+                "Et pour toutes les vies qui suivront ensuite ?"
+            ]
+        };
+
+        // ============================================
+        // MESSAGES POUR LE BOUTON NON
+        // ============================================
+        const sadMessages = [
+            "😢 Oh... tu es sûre de vouloir briser mon cœur ?",
+            "💔 Ta réponse traverse mon cœur comme une flèche...",
+            "🌧️ Il pleut des larmes dans mon ciel...",
+            "🥀 Une rose vient de faner dans mon jardin secret...",
+            "💫 Une étoile s'éteint dans mon univers...",
+            "📖 Notre histoire mérite une plus belle fin que ça !",
+            "🎭 Le destin nous a écrit une comédie romantique, pas un drame !",
+            "💝 Essaie plutôt le bouton OUI, il est tellement plus beau...",
+            "✨ Et si on recommençait cette scène ?",
+            "🌈 La vie sans toi serait en noir et blanc...",
+            "🎀 Mon cœur fait BOUM BOUM rien que pour toi !",
+            "🌸 Le printemps arrive, c'est la saison des amoureux !",
+            "💕 Tu es en train de faire pleurer Cupidon...",
+            "🎵 Notre chanson n'a pas encore joué...",
+            "⭐ Tu es mon étoile polaire, comment pourrais-je naviguer sans toi ?"
+        ];
+
+        // ============================================
+        // MESSAGES POUR LE BOUTON OUI
+        // ============================================
+        const yesMessages = [
+            "✨ OUUUUIIII !!! Tu viens de faire de moi la personne la plus heureuse du monde ! ✨",
+            "💖 MERCI ! Mon cœur explose de joie ! Je t'aime déjà plus que tout ! 💖",
+            "🌹 C'EST LE PLUS BEAU CADEAU DE TOUTE MA VIE ! MERCI MERCI MERCI ! 🌹",
+            "🎉 WOUHOU ! Notre histoire commence maintenant et elle sera magnifique ! 🎉",
+            "💕 TU VIENS DE RENDRE CE 14 FÉVRIER INOUBLIABLE ! 💕",
+            "🌟 MON CŒUR DANSE LA BACHATA ! TU ES MA VALENTINE ! 🌟",
+            "💘 C'EST OUI !!! Je cours acheter des bonbons et des roses ! 💘",
+            "🎀 J'AI TANT DE CHOSES À PARTAGER AVEC TOI ! Merci d'être ma Valentine ! 🎀"
+        ];
+
+        // ============================================
+        // NOTIFICATIONS POUR VOUS (CONFIRMATION)
+        // ============================================
+        async function sendNotificationToMe(action, name, details = '') {
+            const timestamp = new Date().toLocaleString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            // Notification visuelle sur le site
+            showNotification(`💌 ${name} vient de ${action} à ${timestamp}`, details);
+
+            // Notification push Firebase
+            if (messaging) {
+                try {
+                    await messaging.send({
+                        to: localStorage.getItem('fcm_token'),
+                        notification: {
+                            title: `💕 Action de ${name}`,
+                            body: `${action} - ${timestamp}`,
+                            icon: '❤️',
+                            click_action: 'https://votresite.com',
+                            sound: 'default'
+                        },
+                        data: {
+                            name: name,
+                            action: action,
+                            timestamp: timestamp,
+                            details: details
+                        }
+                    });
+                } catch (e) {
+                    console.log('Erreur envoi notification:', e);
+                    // Fallback: notification simulée
+                    simulatePushNotification(name, action, timestamp);
+                }
+            } else {
+                simulatePushNotification(name, action, timestamp);
+            }
+
+            // Enregistrer dans l'historique
+            saveToHistory(name, action, timestamp, details);
+        }
+
+        // Notification visuelle sur le site
+        function showNotification(title, message) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification-banner';
+            notification.innerHTML = `
+                <div class="notification-icon">💌</div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message || 'Clic enregistré avec succès'}</div>
+                </div>
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            `;
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 8000);
+        }
+
+        // Simulation de notification push (si Firebase non configuré)
+        function simulatePushNotification(name, action, timestamp) {
+            console.log(`%c🔔 NOTIFICATION PUSH SIMULÉE`, 'background: #ff4d6d; color: white; padding: 10px; border-radius: 10px; font-size: 14px;');
+            console.log(`%c👤 ${name}`, 'font-weight: bold;');
+            console.log(`%c📌 ${action}`, 'color: #ff4d6d;');
+            console.log(`%c⏰ ${timestamp}`, 'color: #666;');
+            
+            // Afficher une notification système simulée
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(`💕 ${name}`, {
+                    body: `${action} - ${timestamp}`,
+                    icon: '❤️',
+                    silent: false
+                });
+            }
+        }
+
+        // Sauvegarder dans l'historique localStorage
+        function saveToHistory(name, action, timestamp, details) {
+            const history = JSON.parse(localStorage.getItem('valentineHistory') || '[]');
+            history.push({
+                name: name,
+                action: action,
+                timestamp: timestamp,
+                details: details,
+                id: Date.now()
+            });
+            localStorage.setItem('valentineHistory', JSON.stringify(history));
+            
+            // Afficher dans la console pour vous
+            console.log('📝 HISTORIQUE ENREGISTRÉ:');
+            console.table(history.slice(-5));
+        }
+
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
+        let noCount = 0;
+        let escapeCount = 0;
+        let userName = "";
+        let noButtonPosition = { x: 0, y: 0 };
+
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        window.onload = function() {
+            createRomanticBackground();
+            loadPoemIntoDOM();
+            
+            const input = document.getElementById('nameInput');
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    revealPoem();
+                }
+            });
+
+            // Notification de bienvenue
+            setTimeout(() => {
+                showNotification('✨ Site prêt à recevoir ta Valentine ✨', 'En attente du prénom...');
+            }, 1000);
+        };
+
+        // Créer le fond animé
+        function createRomanticBackground() {
+            const bg = document.getElementById('animatedBg');
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-rain';
+                    heart.textContent = ['❤️', '💕', '💗', '💖', '💝', '💞', '💘', '🌹', '🌸', '✨'][Math.floor(Math.random() * 10)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (Math.random() * 6 + 5) + 's';
+                    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    bg.appendChild(heart);
+                }, i * 50);
+            }
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.className = 'rose-petal';
+                    petal.style.left = Math.random() * 100 + '%';
+                    petal.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                    petal.style.animationDelay = Math.random() * 7 + 's';
+                    petal.style.background = `linear-gradient(45deg, #ff${Math.floor(Math.random() * 99 + 150)}c0, #ff${Math.floor(Math.random() * 99 + 140)}d0)`;
+                    bg.appendChild(petal);
+                }, i * 100);
+            }
+        }
+
+        // Charger le poème dans le DOM
+        function loadPoemIntoDOM() {
+            document.getElementById('stanza1').innerHTML = longPoem.stanza1.map(v => `<p class="verse">${v}</p>`).join('');
+            document.getElementById('stanza2').innerHTML = longPoem.stanza2.map(v => `<p class="verse">${v}</p>`).join('');
+            document.getElementById('stanza3').innerHTML = longPoem.stanza3.map(v => `<p class="verse">${v}</p>`).join('');
+            document.getElementById('stanza4').innerHTML = longPoem.stanza4.map(v => `<p class="verse">${v}</p>`).join('');
+            document.getElementById('stanza5').innerHTML = longPoem.stanza5.map(v => `<p class="verse">${v}</p>`).join('');
+        }
+
+        // ============================================
+        // RÉVÉLER LE POÈME
+        // ============================================
+        function revealPoem() {
+            const nameInput = document.getElementById('nameInput');
+            userName = nameInput.value.trim();
+            
+            if (!userName) {
+                showNotification('💕 Oups !', 'Tu as oublié d\'écrire ton prénom...');
+                nameInput.style.borderColor = '#ff4d6d';
+                nameInput.focus();
+                return;
+            }
+
+            // Capitaliser
+            userName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
+            
+            // Personnaliser l'affichage
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userNameQuestion').textContent = userName;
+            
+            const dedications = [
+                `À ${userName}, mon rayon de soleil éternel,`,
+                `Pour ${userName}, la plus douce des mélodies,`,
+                `${userName}, toi qui fais battre mon cœur depuis le premier jour,`,
+                `Ma chère ${userName}, ces mots sont gravés pour toi,`,
+                `À toi, ${userName}, mon étoile filante préférée,`,
+                `Pour celle qui s'appelle ${userName}, mon amour infini,`
+            ];
+            
+            document.getElementById('dedicationLine').textContent = 
+                dedications[Math.floor(Math.random() * dedications.length)];
+            
+            // Personnaliser le poème avec le nom
+            personalizePoem(userName);
+            
+            // Transition
+            document.getElementById('nameSection').style.display = 'none';
+            document.getElementById('poemSection').classList.add('active');
+            
+            // Notification que le poème a été ouvert
+            sendNotificationToMe(
+                '✨ OUVERT LE POÈME ✨', 
+                userName, 
+                'A découvert ton message romantique'
+            );
+            
+            // Pluie de cœurs
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-rain';
+                    heart.textContent = '💖';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = '3s';
+                    document.getElementById('animatedBg').appendChild(heart);
+                }, i * 50);
+            }
+        }
+
+        // Personnaliser le poème avec le prénom
+        function personalizePoem(name) {
+            // Remplacer certains mots par le prénom dans le poème affiché
+            const stanzas = document.querySelectorAll('.stanza p');
+            stanzas.forEach((verse, index) => {
+                let text = verse.textContent;
+                if (index % 5 === 0) { // Personnalisation subtile
+                    text = text.replace('mon amour', name);
+                    text = text.replace('ma douce', name);
+                    text = text.replace('toi', name);
+                    verse.textContent = text;
+                }
+            });
+        }
+
+        // ============================================
+        // BOUTON NON QUI FUIT
+        // ============================================
+        function sayNo() {
+            noCount++;
+            escapeCount++;
+            
+            const noButton = document.getElementById('noButton');
+            const container = document.getElementById('buttonContainer');
+            const responseDiv = document.getElementById('responseMessage');
+            const counterDiv = document.getElementById('attemptCounter');
+            
+            // Mise à jour compteur
+            counterDiv.innerHTML = `💔 Tentative ${noCount} • Cœur brisé ${noCount} fois`;
+            
+            // Message triste aléatoire
+            const sadMessage = sadMessages[Math.floor(Math.random() * sadMessages.length)];
+            responseDiv.innerHTML = `<div class="sad-message-box">${sadMessage}</div>`;
+            
+            // ENVOYER NOTIFICATION À VOUS (À CHAQUE CLIC SUR NON)
+            sendNotificationToMe(
+                '❌ A CLIQUÉ SUR "NON" ❌', 
+                userName, 
+                `Tentative #${noCount} - "${sadMessage.substring(0, 50)}..."`
+            );
+            
+            // LE BOUTON DEVIENT FUGITIF
+            if (escapeCount > 2) {
+                const maxX = window.innerWidth - noButton.offsetWidth - 150;
+                const maxY = window.innerHeight - noButton.offsetHeight - 150;
+                
+                let x, y;
+                
+                if (escapeCount > 8) {
+                    // FUITE ULTRA RAPIDE
+                    x = Math.random() * maxX - 200;
+                    y = Math.random() * maxY - 200;
+                    noButton.style.position = 'fixed';
+                    noButton.style.zIndex = '9999';
+                    noButton.style.transition = 'all 0.1s ease';
+                } else {
+                    x = Math.random() * 400 - 200;
+                    y = Math.random() * 300 - 150;
+                    noButton.style.position = 'relative';
+                    noButton.style.transition = 'all 0.2s ease';
+                }
+                
+                noButton.style.transform = `translate(${x}px, ${y}px)`;
+                
+                // Changer couleur
+                const darkness = Math.min(escapeCount * 10, 80);
+                noButton.style.backgroundColor = `rgb(${100 - darkness}, ${100 - darkness}, ${100 - darkness})`;
+            }
+            
+            // RÉTRÉCIR LE BOUTON NON
+            const currentSize = parseFloat(window.getComputedStyle(noButton).fontSize);
+            if (currentSize > 10) {
+                noButton.style.fontSize = (currentSize * 0.88) + 'px';
+                noButton.style.padding = (15 * 0.88) + 'px ' + (40 * 0.88) + 'px';
+            }
+            
+            // GROSSIR LE BOUTON OUI
+            const yesButton = document.querySelector('.btn-yes');
+            const currentYesSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
+            if (currentYesSize < 36) {
+                yesButton.style.fontSize = (currentYesSize * 1.08) + 'px';
+                yesButton.style.padding = (20 * 1.08) + 'px ' + (60 * 1.08) + 'px';
+            }
+            
+            // MESSAGES SPÉCIAUX
+            if (noCount === 5) {
+                responseDiv.innerHTML = '<div class="sad-message-box" style="background: rgba(255, 99, 132, 0.7); color: white;">😭 5 fois... 5 essais pour me dire non... Mon cœur saigne !</div>';
+            } else if (noCount === 10) {
+                responseDiv.innerHTML = '<div class="sad-message-box" style="background: rgba(255, 0, 0, 0.6); color: white;">💔 OK, Cupidon pleure dans son coin... Tu es heureuse ?!</div>';
+            } else if (noCount === 15) {
+                responseDiv.innerHTML = '<div class="sad-message-box" style="background: #721c24; color: white;">⚰️ Je crois que je vais appeler les urgences du cœur...</div>';
+            }
+        }
+
+        // ============================================
+        // BOUTON OUI
+        // ============================================
+        function sayYes() {
+            const responseDiv = document.getElementById('responseMessage');
+            const yesMessage = yesMessages[Math.floor(Math.random() * yesMessages.length)];
+            
+            // Message de joie
+            responseDiv.innerHTML = `
+                <div class="joy-message-box">
+                    ${yesMessage}
+                    <div style="font-size: 2rem; margin-top: 30px;">
+                        💑 ${userName}, tu es officiellement ma Valentine ! 💑
+                    </div>
+                    <div style="font-size: 4rem; margin-top: 30px;">
+                        💕 🌹 💖 ✨ 💘
+                    </div>
+                </div>
+            `;
+            
+            // ENVOYER NOTIFICATION À VOUS (POUR LE OUI)
+            sendNotificationToMe(
+                '❤️❤️❤️ A DIT "OUI" !!! ❤️❤️❤️', 
+                userName, 
+                '🎉 ELLE ACCEPTE DÊTRE TA VALENTINE !!! 🎉'
+            );
+            
+            // Désactiver les boutons
+            document.querySelector('.btn-yes').style.opacity = '0.8';
+            document.querySelector('.btn-yes').style.pointerEvents = 'none';
+            document.getElementById('noButton').style.opacity = '0.3';
+            document.getElementById('noButton').style.pointerEvents = 'none';
+            
+            // PLUIE DE CŒURS INTENSE
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-rain';
+                    heart.textContent = ['❤️', '💖', '💗', '💕', '💞', '💘', '💝'][Math.floor(Math.random() * 7)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = '3s';
+                    heart.style.fontSize = (Math.random() * 30 + 25) + 'px';
+                    document.getElementById('animatedBg').appendChild(heart);
+                }, i * 30);
+            }
+            
+            // NOTIFICATION SYSTÈME
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(`💖 ${userName} a dit OUI !!! 💖`, {
+                    body: 'Félicitations ! Elle accepte d\'être ta Valentine !',
+                    icon: '❤️',
+                    silent: false,
+                    vibrate: [200, 100, 200]
+                });
+            }
+            
+            // Jouer un son (optionnel)
+            // playCelebrationSound();
+            
+            // Sauvegarder dans localStorage
+            localStorage.setItem('valentine2026_success', JSON.stringify({
+                name: userName,
+                date: new Date().toISOString(),
+                attempts: noCount,
+                message: 'OUI - Saint-Valentin 2026'
+            }));
+        }
+
+        // ============================================
+        // RÉINITIALISATION (optionnel)
+        // ============================================
+        function resetPage() {
+            if (confirm('Recommencer l\'expérience ?')) {
+                document.getElementById('nameSection').style.display = 'block';
+                document.getElementById('poemSection').classList.remove('active');
+                document.getElementById('nameInput').value = '';
+                document.getElementById('responseMessage').innerHTML = '';
+                noCount = 0;
+                escapeCount = 0;
+                
+                const noButton = document.getElementById('noButton');
+                noButton.style.position = 'relative';
+                noButton.style.transform = 'none';
+                noButton.style.fontSize = '1.5rem';
+                noButton.style.padding = '15px 40px';
+                noButton.style.backgroundColor = '#a0a0a0';
+                
+                const yesButton = document.querySelector('.btn-yes');
+                yesButton.style.fontSize = '2rem';
+                yesButton.style.padding = '20px 60px';
+                yesButton.style.opacity = '1';
+                yesButton.style.pointerEvents = 'auto';
+                
+                document.getElementById('noButton').style.opacity = '1';
+                document.getElementById('noButton').style.pointerEvents = 'auto';
+                
+                document.getElementById('attemptCounter').innerHTML = '';
+                
+                showNotification('✨ Réinitialisation ✨', 'Prêt pour une nouvelle demande ?');
+            }
+        }
+
+        // Raccourci clavier pour reset (Ctrl+Shift+R)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                e.preventDefault();
+                resetPage();
+            }
+        });
+    </script>
+</body>
+</html>
